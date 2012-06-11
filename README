@@ -1,0 +1,48 @@
+*****************************************************************************
+*                                  Installation
+*****************************************************************************
+
+Install make, gcc, and kernel headers for your distribution. Then run:
+make
+sudo make install
+sudo modprobe ctn91xx
+
+*****************************************************************************
+*                                  Usage
+*****************************************************************************
+
+You should see a network interface when you run ifconfig -a called ctn0
+
+You can set a static IP address on the 192.168.200.0/24 subnet (don't
+use 192.168.200.1) or just use a dhcp client to get an IP address for it.
+
+The InfiniTV device webpage will be available at http://192.168.200.1
+From there you can tune via frequency or channel number. Only ClearQAM and
+CCI=0 content is available on linux due to lack of DRM support.
+
+Access video via a special device file created under:
+/dev/ceton/ctn91xx_mpeg0_0-5
+
+You can run "mplayer -cache 8192 /dev/ceton/ctn91xx_mpeg0_0" to play video
+off the first tuner. Depending on your system, extra buffering via the shell 
+might improve performance. E.g. 
+cat /dev/ceton/ctn91xx_mpeg0_0 | mplayer -cache 8192 -
+
+
+*****************************************************************************
+*                              Multiple Cards
+*****************************************************************************
+More than one InfiniTV is handled by creating more network interfaces
+(ctn1,ctn2,etc...). The IP assignment scheme is:
+192.168.200.1
+192.168.201.2
+192.168.202.3
+192.168.203.4
+etc..
+
+Run make as normal user, and then 'make install' as root. Then either reboot
+or "modprobe ctn91xx". Once installed, you should see a network device called
+ctn0. The
+InfiniTV web page will be at <a
+href="http://192.168.200.1">http://192.168.200.1</a>. Only ClearQAM and CCI=0
+channels are available in linux due to lack of DRM support. 

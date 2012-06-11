@@ -1,0 +1,1 @@
+KERNEL=="ctn91xx_*", NAME="ceton/%k", MODE="0666",OWNER="root",GROUP="root"

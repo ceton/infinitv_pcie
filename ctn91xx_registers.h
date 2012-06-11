@@ -1,0 +1,152 @@
+#ifndef CTN91XX_REGISTERS_H
+#define CTN91XX_REGISTERS_H
+
+#ifndef USE_INTERNAL
+#define USE_INTERNAL 1
+#endif
+
+/* Size of pci regions (data and registers)*/
+#define CTN91XX_REG_REGION_SIZE 2*64*1024
+#define CTN91XX_TRANSLATION_REG_REGION_SIZE 1*64*1024
+
+#define ALTERA_VENDOR_ID 0x1172
+#define CETON_VENDOR_ID  0x1B7C
+#define CTN91XX_DEVICE_ID 0x0004
+
+/* REG SPACE OFFSETS */
+#define FILTER_DMA_REG_OFFSET   0x0C00
+#define DMA_REG_OFFSET          0x1000
+#define SYSTEM_CONTROL_OFFSET   0x0800
+#define MSG_BUFFER_OFFSET       0x8000
+#define TIMER_REG_OFFSET        0xCC00
+#define PROC_IDENT_OFFSET       0xC000
+
+
+#define CTN91XX_FW_START_BUF_ADDR (0x40000000 + (24 * 1024 * 1024))
+#define CTN91XX_FW_BUF_SIZE (PAGE_SIZE)
+
+#define CTN91XX_UNIQUE_ID_LOW               996
+#define CTN91XX_UNIQUE_ID_HIGH              1000
+
+#define CTN91XX_RELEASE_VERSION_OFFSET      1020
+#define CTN91XX_CHIP_VERSION_OFFSET         1022
+
+#define CTN91XX_VERSION_OFFSET              1020
+
+#define CTN91XX_VERSION_INFINITV4_PCI_NOAH      0x3
+#define CTN91XX_VERSION_INFINITV4_USB_LUNA      0x4
+#define CTN91XX_VERSION_INFINITV4_ETH_LUNA      0x5
+#define CTN91XX_VERSION_INFINITV4_USB_VENICE    0x6
+#define CTN91XX_VERSION_INFINITV6_USB_VENICE    0x7
+#define CTN91XX_VERSION_INFINITV6_ETH_VENICE    0x8
+#define CTN91XX_VERSION_INFINITV4_ETH_VENICE    0x9
+#define CTN91XX_VERSION_INFINITV6_PCIE_NOVA     0x10
+#define CTN91XX_VERSION_INFINITV4_PCIE_NOVA     0x11
+
+/* Interrupt types */
+
+#define CTN91XX_EVENT_RPC_RECVD              0x54
+#define CTN91XX_EVENT_RPC_ACK_RECVD          0x55
+
+#define MSG_BUFFER_MSG_AVAIL        0
+#define MSG_BUFFER_INT_ACK_AVAIL    1
+#define MSG_BUFFER_MSG_LEN          2
+#define MSG_BUFFER_MSG_RECV         4
+#define MSG_BUFFER_INT_ACK_RECV     5
+#define MSG_BUFFER_RESET            6
+#define MSG_BUFFER_INT_ENABLE       7
+#define MSG_BUFFER_TAG              8
+#define MSG_BUFFER_TAG_READY        0x80
+#define MSG_BUFFER_TAG_ETHERNET     ( 0x01 | MSG_BUFFER_TAG_READY )
+#define MSG_BUFFER_TAG_CONTROL      ( 0x02 | MSG_BUFFER_TAG_READY )
+#define MSG_BUFFER_SLOT_NUMBER(dev) ((0x10000) | ((dev->slot_number << 8) & 0xff00))
+#define MSG_BUFFER_LOCAL_TAG        12
+#define MSG_BUFFER_BUFFER           0x1000
+#define MSG_BUFFER_BUFFER_LENGTH    4096
+
+#define CTN91XX_ORIGIN_CARD0        0x00
+#define CTN91XX_ORIGIN_TUNER0       0x04
+#define CTN91XX_ORIGIN_TUNER1       0x05
+#define CTN91XX_ORIGIN_TUNER2       0x06
+#define CTN91XX_ORIGIN_TUNER3       0x07
+#define CTN91XX_ORIGIN_TUNER4       0x08
+#define CTN91XX_ORIGIN_TUNER5       0x09
+#define CTN91XX_ORIGIN_FILTER0      0x0A
+#define CTN91XX_ORIGIN_FILTER1      0x0B
+#define CTN91XX_ORIGIN_FILTER2      0x0C
+#define CTN91XX_ORIGIN_FILTER3      0x0D
+#define CTN91XX_ORIGIN_FILTER4      0x0E
+#define CTN91XX_ORIGIN_FILTER5      0x0F
+#define CTN91XX_ORIGIN_MSG_BUFFER   0x10
+
+#define NUM_FACE_GPIO 32
+
+/**
+ * Timer registers
+ */
+#define NUM_TIMERS              16
+#define TIMER_ENABLE(index)  ( index*16 + 0 )
+#define TIMER_IRQ_REG(index) ( index*16 + 1 )
+#define TIMER_MASK(index)    ( index*16 + 2 )
+#define TIMER_TIMEOUT(index) ( index*16 + 4 )
+
+#define MAX_TIMER_ENABLE(index)  ( (index+6)*16 + 0 )
+#define MAX_TIMER_IRQ_REG(index) ( (index+6)*16 + 1 )
+#define MAX_TIMER_MASK(index)    ( (index+6)*16 + 2 )
+#define MAX_TIMER_TIMEOUT(index) ( (index+6)*16 + 4 )
+
+/**
+ * MPEG DMA control registers
+ */
+#define MPEG_DMA_INTERRUPT_ENABLE           0
+#define MPEG_DMA_WRITE_ENABLE               1
+#define MPEG_DMA_BANK_INTERRUPT_MASK        2
+#define MPEG_DMA_BANK_INTERRUPT_MASKED      3
+#define MPEG_DMA_BANK_INTERRUPT_REAL        4
+#define MPEG_DMA_RESET                      5
+#define MPEG_DMA_BUSY                       6
+#define MPEG_DMA_PAGES_PER_BANK_BASE        8
+#define MPEG_DMA_BYTES_PER_PAGE_BASE        56
+#define MPEG_DMA_LOCK_BASE                  80
+
+#define MPEG_DMA_NOTIFY_VECTOR          3696
+#define MPEG_DMA_NOTIFY_ENABLE          3698
+#define MPEG_DMA_TIMER_ENABLE           3699
+#define MPEG_DMA_NOTIFY_BASE            3700
+#define MPEG_DMA_NOTIFY_BYTES_PER_PAGE_BASE 3704
+#define MPEG_DMA_PAGES_PER_NOTIFY_BASE      3706
+#define MPEG_DMA_TIMEOUT_VALUE          3796
+#define MPEG_DMA_SET_TIMEOUT            3800
+#define MPEG_DMA_NOTIFY_VECTOR_MASK     3804
+#define MPEG_DMA_NOTIFY_VECTOR_REAL     3808
+
+#define MPEG_FILTER_DMA_INTERRUPT_ENABLE        0
+#define MPEG_FILTER_DMA_WRITE_ENABLE            1
+#define MPEG_FILTER_DMA_BANK_INTERRUPT_MASK     2
+#define MPEG_FILTER_DMA_BANK_INTERRUPT_MASKED   3
+#define MPEG_FILTER_DMA_BANK_INTERRUPT_REAL     4
+#define MPEG_FILTER_DMA_RESET                   5
+#define MPEG_FILTER_DMA_BUSY                    6
+#define MPEG_FILTER_DMA_PAGES_PER_BANK_BASE     8
+#define MPEG_FILTER_DMA_BYTES_PER_PAGE_BASE     56
+#define MPEG_FILTER_DMA_LOCK_BASE               80
+
+#define MPEG_FILTER_DMA_NOTIFY_VECTOR   128
+#define MPEG_FILTER_DMA_NOTIFY_ENABLE   130
+#define MPEG_FILTER_DMA_TIMER_ENABLE    131
+#define MPEG_FILTER_DMA_NOTIFY_BASE     132
+#define MPEG_FILTER_DMA_NOTIFY_BYTES_PER_PAGE_BASE  136
+#define MPEG_FILTER_DMA_PAGES_PER_NOTIFY_BASE       138
+#define MPEG_FILTER_DMA_NOTIFY_VECTOR_MASK  188
+#define MPEG_FILTER_DMA_NOTIFY_VECTOR_REAL  190
+#define MPEG_FILTER_DMA_TIMEOUT_VALUE   192
+#define MPEG_FILTER_DMA_SET_TIMEOUT     196
+
+
+
+#define SYSTEM_CONTROL_CLOCK_FREQ               1004
+#define SYSTEM_CONTROL_UP_TIME_OFFSET           76
+#define SYSTEM_CONTROL_LAST_UP_TIME_OFFSET      84
+
+
+#endif
