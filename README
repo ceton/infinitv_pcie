@@ -40,9 +40,3 @@ More than one InfiniTV is handled by creating more network interfaces
 192.168.203.4
 etc..
 
-Run make as normal user, and then 'make install' as root. Then either reboot
-or "modprobe ctn91xx". Once installed, you should see a network device called
-ctn0. The
-InfiniTV web page will be at <a
-href="http://192.168.200.1">http://192.168.200.1</a>. Only ClearQAM and CCI=0
-channels are available in linux due to lack of DRM support. 
