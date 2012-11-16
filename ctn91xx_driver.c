@@ -132,7 +132,11 @@ static int ctn91xx_mmap(struct file* filp, struct vm_area_struct* vma)
             }
 
             pfn = (unsigned long)dev->hw_reg_base >> PAGE_SHIFT;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,7,0)
             vma->vm_flags |= VM_IO | VM_RESERVED;
+#else
+            vma->vm_flags |= VM_IO | VM_DONTEXPAND | VM_DONTDUMP;
+#endif
 
             if(io_remap_pfn_range(vma, vma->vm_start,
                                   pfn,
@@ -150,7 +154,11 @@ static int ctn91xx_mmap(struct file* filp, struct vm_area_struct* vma)
             }
 
             pfn = (unsigned long)dev->translation_hw_reg_base >> PAGE_SHIFT;
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3,7,0)
             vma->vm_flags |= VM_IO | VM_RESERVED;
+#else
+            vma->vm_flags |= VM_IO | VM_DONTEXPAND | VM_DONTDUMP;
+#endif
 
             if(io_remap_pfn_range(vma, vma->vm_start,
                                   pfn,
