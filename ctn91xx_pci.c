@@ -215,7 +215,7 @@ reg_base_cleanup:
     return -EIO;
 }
 
-static void __devexit ctn91xx_unregister(struct pci_dev *pdev)
+static void ctn91xx_unregister(struct pci_dev *pdev)
 {
     ctn91xx_dev_t* dev = (ctn91xx_dev_t*)pci_get_drvdata(pdev);
 
@@ -254,7 +254,7 @@ static void __devexit ctn91xx_unregister(struct pci_dev *pdev)
     kfree( dev );
 }
 
-static struct pci_device_id ctn91xx_table[] __devinitdata = {
+static struct pci_device_id ctn91xx_table[] = {
     { CETON_VENDOR_ID, CTN91XX_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0 },
     { ALTERA_VENDOR_ID, CTN91XX_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0 },
     { 0, }
@@ -264,7 +264,7 @@ static struct pci_driver ctn91xx_driver = {
     .name = DEVICE_NAME,
     .id_table = ctn91xx_table,
     .probe = ctn91xx_register,
-    .remove = __devexit_p(ctn91xx_unregister),
+    .remove = ctn91xx_unregister,
 };
 
 int ctn91xx_register_pci_driver()
