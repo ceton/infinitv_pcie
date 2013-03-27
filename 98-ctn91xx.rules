@@ -1,1 +1,1 @@
-KERNEL=="ctn91xx_*", SYMLINK+="/ceton/%k", MODE="0666",OWNER="root",GROUP="root"
+KERNEL=="ctn91xx_*", SYMLINK+="ceton/%k", MODE="0666",OWNER="root",GROUP="root"
