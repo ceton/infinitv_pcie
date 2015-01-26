@@ -11,12 +11,6 @@
 #endif
 
 
-void ctn91xx_print_compilation(void)
-{
-    ctn91xx_dev_t* dev = NULL;
-    INFO("driver compiled at %s on %s", __TIME__, __DATE__);
-}
-
 ctn91xx_dev_t* ctn91xx_lookup_dev_from_file(struct inode* inode, struct file* file)
 {
     if(file->private_data) {
@@ -220,9 +214,6 @@ static int __init ctn91xx_init(void)
     int ret;
 
     ctn91xx_dev_t* dev = NULL;
-
-    ctn91xx_print_compilation();
-
 
     ret = register_chrdev_region( MKDEV( CETON_MAJOR, 0 ), 255 , DEVICE_NAME );
 
