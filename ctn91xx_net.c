@@ -159,7 +159,11 @@ static int ctn91xx_net_start_xmit( struct sk_buff *skb, struct net_device *ndev 
         sdump_buffer( skb->data, skb->len, "tx");
 #endif
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,7,0)
+        netif_trans_update(ndev);
+#else
         ndev->trans_start = jiffies;
+#endif
         ctn91xx_write8( 1, dev->msg_base, MSG_BUFFER_MSG_AVAIL );
 
     } else {
