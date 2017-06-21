@@ -242,7 +242,9 @@ void ctn91xx_net_rx_skb( ctn91xx_dev_t* dev, struct sk_buff* skb, uint16_t rx_le
     skb->protocol = eth_type_trans( skb, netdev );
     netif_rx( skb );
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,11,0)
     netdev->last_rx = jiffies;
+#endif
     priv->stats.rx_bytes += rx_len;
     priv->stats.rx_packets++;
 
@@ -287,7 +289,9 @@ irqreturn_t ctn91xx_net_isr(int irq, void *ptr)
                 skb->protocol = eth_type_trans( skb, netdev );
                 netif_rx( skb );
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,11,0)
                 netdev->last_rx = jiffies;
+#endif
                 priv->stats.rx_bytes += rx_len;
                 priv->stats.rx_packets++;
             } else {
