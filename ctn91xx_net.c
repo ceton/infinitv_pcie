@@ -159,7 +159,8 @@ static int ctn91xx_net_start_xmit( struct sk_buff *skb, struct net_device *ndev 
         sdump_buffer( skb->data, skb->len, "tx");
 #endif
 
-        ndev->trans_start = jiffies;
+        
+        netif_trans_update(ndev);
         ctn91xx_write8( 1, dev->msg_base, MSG_BUFFER_MSG_AVAIL );
 
     } else {
@@ -238,7 +239,7 @@ void ctn91xx_net_rx_skb( ctn91xx_dev_t* dev, struct sk_buff* skb, uint16_t rx_le
     skb->protocol = eth_type_trans( skb, netdev );
     netif_rx( skb );
 
-    netdev->last_rx = jiffies;
+    //netdev->last_rx = jiffies;
     priv->stats.rx_bytes += rx_len;
     priv->stats.rx_packets++;
 
@@ -283,7 +284,7 @@ irqreturn_t ctn91xx_net_isr(int irq, void *ptr)
                 skb->protocol = eth_type_trans( skb, netdev );
                 netif_rx( skb );
 
-                netdev->last_rx = jiffies;
+                //netdev->last_rx = jiffies;
                 priv->stats.rx_bytes += rx_len;
                 priv->stats.rx_packets++;
             } else {
