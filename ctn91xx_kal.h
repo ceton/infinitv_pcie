@@ -27,6 +27,10 @@
 #include <linux/cdev.h>
 #include <linux/list.h>
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,11,0)
+#include <linux/sched/signal.h>
+#endif
+
 //it's in an arch specific header...this is just easier
 #define TCGETS 0x5401
 
