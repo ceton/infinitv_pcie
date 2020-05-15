@@ -10,7 +10,11 @@ static int ctn91xx_net_open( struct net_device *ndev );
 static int ctn91xx_net_start_xmit( struct sk_buff *skb, struct net_device *ndev );
 static int ctn91xx_net_stop( struct net_device *ndev );
 static struct net_device_stats* ctn91xx_net_get_stats( struct net_device *ndev );
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,6,0)
+static void ctn91xx_net_tx_timeout( struct net_device* ndev, unsigned int txq );
+#else
 static void ctn91xx_net_tx_timeout( struct net_device* ndev );
+#endif
 static void ctn91xx_handle_tx( ctn91xx_dev_t* dev, ctn91xx_net_priv_t* priv );
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,29)
@@ -175,7 +179,11 @@ static int ctn91xx_net_start_xmit( struct sk_buff *skb, struct net_device *ndev 
     return ret;
 }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,6,0)
+static void ctn91xx_net_tx_timeout( struct net_device* net_dev, unsigned int txq )
+#else
 static void ctn91xx_net_tx_timeout( struct net_device* net_dev )
+#endif
 {
     ctn91xx_net_priv_t* priv = netdev_priv(net_dev);
     ctn91xx_dev_t* dev = priv->ctn91xx_dev;

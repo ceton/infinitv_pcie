@@ -32,15 +32,15 @@ all: $(targets)
 
 ctn91xx:
 	@echo "Building ctn91xx driver..."
-	@(cd $(KERNEL_DIR) && make -j15 -C $(KERNEL_DIR) SUBDIRS=$(PWD))
+	@(cd $(KERNEL_DIR) && make -j15 -C $(KERNEL_DIR) M=$(PWD))
 
 ctn91xx_module:
-	@(cd $(KERNEL_DIR) && make -j15 -C $(KERNEL_DIR) SUBDIRS=$(PWD) modules)
+	@(cd $(KERNEL_DIR) && make -j15 -C $(KERNEL_DIR) M=$(PWD) modules)
 	
 
 install:
 	@echo "Installing ctn91xx driver..."
-	@(cd $(KERNEL_DIR) && make -j20 -C $(KERNEL_DIR) SUBDIRS=$(PWD) modules_install)
+	@(cd $(KERNEL_DIR) && make -j20 -C $(KERNEL_DIR) M=$(PWD) modules_install)
 	cp 98-ctn91xx.rules /etc/udev/rules.d/
 	/sbin/depmod -a
 
