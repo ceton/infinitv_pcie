@@ -13,6 +13,10 @@ static int boards[MAX_BOARDS] = {};
 
 static int face_present = 0;
 
+#if LINUX_VERSION_CODE > KERNEL_VERSION(5,6,0)
+#define ioremap_nocache(a,b) ioremap(a,b)
+#endif
+
 static int ctn91xx_register(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
     uint32_t freq;
