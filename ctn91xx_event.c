@@ -186,7 +186,7 @@ cleanup:
         ctn91xx_event_cleanup(dev, event);
     }
 
-    current->state = TASK_RUNNING;
+    __set_current_state(TASK_RUNNING);
     remove_wait_queue(&dev->event_waitqueue, &wait);
 
     return retval;
