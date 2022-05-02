@@ -35,6 +35,7 @@ int ctn91xx_net_init( ctn91xx_dev_t* dev )
 {
     struct net_device* netdev = NULL;
     ctn91xx_net_priv_t* priv = NULL;
+    u8 addr[6];
     int i;
 
     netdev = alloc_etherdev( sizeof( ctn91xx_net_priv_t ) );
@@ -74,12 +75,13 @@ int ctn91xx_net_init( ctn91xx_dev_t* dev )
     }
 
 #if USE_PCI
-    netdev->dev_addr[0] = 0x00;
-    netdev->dev_addr[1] = 0x22;
-    netdev->dev_addr[2] = 0x2c;
-    netdev->dev_addr[3] = 0xff;
-    netdev->dev_addr[4] = 0xff;
-    netdev->dev_addr[5] = 0xff - dev->board_number;
+    addr[0] = 0x00;
+    addr[1] = 0x22;
+    addr[2] = 0x2c;
+    addr[3] = 0xff;
+    addr[4] = 0xff;
+    addr[5] = 0xff - dev->board_number;
+    eth_hw_addr_set(netdev,addr);
 #else
     random_ether_addr(netdev->dev_addr);
 #endif
