@@ -92,7 +92,11 @@ int ctn91xx_board_init(ctn91xx_dev_t* dev)
 
         for( j=0; j<vbuffer->npages; j++ ) {
 #if USE_PCI
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5,18,0)
             vbuffer->buffers[j] = pci_alloc_consistent( dev->pdev, PAGE_SIZE, &vbuffer->dma_addrs[j] );
+#else
+            vbuffer->buffers[j] = dma_alloc_coherent(& dev->pdev->dev, PAGE_SIZE, &vbuffer->dma_addrs[j],GFP_ATOMIC);
+#endif
 #else
             vbuffer->buffers[j] = kmalloc(PAGE_SIZE, GFP_KERNEL);
             if( vbuffer->buffers[j] ) {
@@ -187,7 +191,11 @@ void ctn91xx_board_uninit_dma_pool(ctn91xx_dev_t* dev)
 
         for( j=0; j<vbuffer->npages; j++ ) {
 #if USE_PCI
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5,18,0)
             pci_free_consistent( dev->pdev, PAGE_SIZE, vbuffer->buffers[j], vbuffer->dma_addrs[j] );
+#else
+            dma_free_coherent(& dev->pdev->dev, PAGE_SIZE, vbuffer->buffers[j], vbuffer->dma_addrs[j] );
+#endif
 #else
             kfree( vbuffer->buffers[j] );
 #endif
