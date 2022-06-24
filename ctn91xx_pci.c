@@ -13,6 +13,10 @@ static int boards[MAX_BOARDS] = {};
 
 static int face_present = 0;
 
+#if LINUX_VERSION_CODE > KERNEL_VERSION(5,6,0)
+#define ioremap_nocache(a,b) ioremap(a,b)
+#endif
+
 static int ctn91xx_register(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
     uint32_t freq;
@@ -48,7 +52,11 @@ static int ctn91xx_register(struct pci_dev *pdev, const struct pci_device_id *en
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3,1,0)
     if(pci_set_dma_mask(pdev, DMA_32BIT_MASK)) {
 #else
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5,18,0)
     if(pci_set_dma_mask(pdev, DMA_BIT_MASK(32))) {
+#else
+    if(dma_set_mask(& pdev->dev, DMA_BIT_MASK(32))) {
+#endif
 #endif
         ERROR("No suitable DMA mask available.");
     }

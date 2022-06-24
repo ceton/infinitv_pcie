@@ -10,7 +10,11 @@ static int ctn91xx_net_open( struct net_device *ndev );
 static int ctn91xx_net_start_xmit( struct sk_buff *skb, struct net_device *ndev );
 static int ctn91xx_net_stop( struct net_device *ndev );
 static struct net_device_stats* ctn91xx_net_get_stats( struct net_device *ndev );
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,6,0)
+static void ctn91xx_net_tx_timeout( struct net_device* ndev, unsigned int txq );
+#else
 static void ctn91xx_net_tx_timeout( struct net_device* ndev );
+#endif
 static void ctn91xx_handle_tx( ctn91xx_dev_t* dev, ctn91xx_net_priv_t* priv );
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,29)
@@ -31,6 +35,7 @@ int ctn91xx_net_init( ctn91xx_dev_t* dev )
 {
     struct net_device* netdev = NULL;
     ctn91xx_net_priv_t* priv = NULL;
+    u8 addr[6];
     int i;
 
     netdev = alloc_etherdev( sizeof( ctn91xx_net_priv_t ) );
@@ -70,12 +75,13 @@ int ctn91xx_net_init( ctn91xx_dev_t* dev )
     }
 
 #if USE_PCI
-    netdev->dev_addr[0] = 0x00;
-    netdev->dev_addr[1] = 0x22;
-    netdev->dev_addr[2] = 0x2c;
-    netdev->dev_addr[3] = 0xff;
-    netdev->dev_addr[4] = 0xff;
-    netdev->dev_addr[5] = 0xff - dev->board_number;
+    addr[0] = 0x00;
+    addr[1] = 0x22;
+    addr[2] = 0x2c;
+    addr[3] = 0xff;
+    addr[4] = 0xff;
+    addr[5] = 0xff - dev->board_number;
+    eth_hw_addr_set(netdev,addr);
 #else
     random_ether_addr(netdev->dev_addr);
 #endif
@@ -175,7 +181,11 @@ static int ctn91xx_net_start_xmit( struct sk_buff *skb, struct net_device *ndev 
     return ret;
 }
 
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,6,0)
+static void ctn91xx_net_tx_timeout( struct net_device* net_dev, unsigned int txq )
+#else
 static void ctn91xx_net_tx_timeout( struct net_device* net_dev )
+#endif
 {
     ctn91xx_net_priv_t* priv = netdev_priv(net_dev);
     ctn91xx_dev_t* dev = priv->ctn91xx_dev;

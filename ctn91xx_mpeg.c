@@ -1218,7 +1218,11 @@ void ctn91xx_mpeg_unmap_page(ctn91xx_dev_t* dev, vbuffer_t* vbuffer,
     vbuffer->lock_cnt[page_idx]--;
     if(vbuffer->lock_cnt[page_idx] == 0) {
 #if USE_PCI
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5,18,0)
         pci_dma_sync_single_for_cpu(dev->pdev, vbuffer->dma_addrs[page_idx], PAGE_SIZE, PCI_DMA_FROMDEVICE);
+#else
+        dma_sync_single_for_cpu(& dev->pdev->dev, vbuffer->dma_addrs[page_idx], PAGE_SIZE, (enum dma_data_direction) DMA_FROM_DEVICE);
+#endif
 #endif
         vbuffer->remaining[page_idx] = bytes_per_page;
         vbuffer->sizes[page_idx] = bytes_per_page;
@@ -1436,7 +1440,11 @@ void ctn91xx_interrupt_mpeg_dma(ctn91xx_dev_t* dev, uint8_t origin, int bank)
                 int map_page_index = (cur_page_index + num_pages) % vbuffer->npages;
 
 #if USE_PCI
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5,18,0)
                 pci_dma_sync_single_for_device(dev->pdev, vbuffer->dma_addrs[map_page_index], PAGE_SIZE, PCI_DMA_FROMDEVICE);
+#else
+                dma_sync_single_for_device(& dev->pdev->dev, vbuffer->dma_addrs[map_page_index], PAGE_SIZE, (enum dma_data_direction) DMA_FROM_DEVICE);
+#endif
 #endif
                 if(is_filter_stream(vbuffer->tuner_index)) {
                     ctn91xx_write32(vbuffer->dma_addrs[map_page_index],
@@ -1468,7 +1476,11 @@ void vbuffer_map_bank(ctn91xx_dev_t* dev, vbuffer_t* vbuffer, int num_pages, int
         int write_page_index = WRAPPED_PAGE_INDEX(vbuffer, vbuffer->write_idx + j);
 
 #if USE_PCI
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5,18,0)
         pci_dma_sync_single_for_device(dev->pdev, vbuffer->dma_addrs[write_page_index], PAGE_SIZE, PCI_DMA_FROMDEVICE);
+#else
+        dma_sync_single_for_device(& dev->pdev->dev, vbuffer->dma_addrs[write_page_index], PAGE_SIZE, DMA_FROM_DEVICE);
+#endif
 #endif
         if(is_filter_stream(vbuffer->tuner_index)) {
             ctn91xx_write32(vbuffer->dma_addrs[write_page_index],
